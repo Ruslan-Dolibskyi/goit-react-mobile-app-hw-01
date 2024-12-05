@@ -1,5 +1,6 @@
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { useFonts } from "expo-font";
+import LoginScreen from "./src/screens/LoginScreen";
 import RegistrationScreen from "./src/screens/RegistrationScreen";
 
 export default function App() {
@@ -18,9 +19,11 @@ export default function App() {
     );
   }
 
-  return <RegistrationScreen />;
+  return (
+    <LoginScreen />
+    // <RegistrationScreen />
+  );
 }
-
 const style = StyleSheet.create({
   section: {
     flex: 1,
