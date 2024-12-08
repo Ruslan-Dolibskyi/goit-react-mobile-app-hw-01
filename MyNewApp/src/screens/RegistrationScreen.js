@@ -19,7 +19,8 @@ import { Ionicons } from "@expo/vector-icons";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 
-const RegistrationScreen = () => {
+const RegistrationScreen = ({ navigation }) => {
+  // Додано параметр navigation
   const [user, setUser] = useState({
     login: "",
     email: "",
@@ -46,7 +47,7 @@ const RegistrationScreen = () => {
   };
 
   const onSignIn = () => {
-    console.log("signIn");
+    navigation.navigate("LoginScreen"); // Змінено для переходу до LoginScreen
   };
 
   const pickImage = async () => {};

@@ -19,7 +19,8 @@ import Button from "../components/Button";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
+  // Додано параметр navigation
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -45,7 +46,7 @@ const LoginScreen = () => {
   };
 
   const onSignUp = () => {
-    console.log("signUp");
+    navigation.navigate("RegistrationScreen"); // Використання навігації для переходу
   };
 
   const showButton = (
@@ -66,7 +67,7 @@ const LoginScreen = () => {
 
       <KeyboardAvoidingView
         style={styles.container}
-        behavior={Platform.OS == "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : "height"} // Дрібна корекція синтаксису
       >
         <View style={styles.formContainer}>
           <Text style={styles.title}>Увійти</Text>
