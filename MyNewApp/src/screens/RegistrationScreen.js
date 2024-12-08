@@ -20,38 +20,40 @@ import { Ionicons } from "@expo/vector-icons";
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 
 const RegistrationScreen = () => {
-  const [login, setLogin] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isPasswordVisible, setIsPasswordVisible] = useState(true);
-  const [photo, setPhoto] = useState(null);
+  const [user, setUser] = useState({
+    login: "",
+    email: "",
+    password: "",
+    isPasswordVisible: true,
+  });
 
-  const handleLoginChange = (value) => setLogin(value);
-  const handleEmailChange = (value) => setEmail(value);
-  const handlePasswordChange = (value) => setPassword(value);
+  const handleInputChange = (field, value) => {
+    setUser((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
-  const showPassword = () => setIsPasswordVisible((prev) => !prev);
+  const togglePasswordVisibility = () => {
+    setUser((prev) => ({
+      ...prev,
+      isPasswordVisible: !prev.isPasswordVisible,
+    }));
+  };
 
   const onRegister = async () => {
-    console.log("register");
+    console.log("register", user);
   };
 
   const onSignIn = () => {
     console.log("signIn");
   };
 
-  const pickImage = async () => {
-  };
-
-  const showButton = (
-    <TouchableOpacity onPress={showPassword}>
-      <Text style={[styles.baseText, styles.passwordButtonText]}>Показати</Text>
-    </TouchableOpacity>
-  );
+  const pickImage = async () => {};
 
   const photoButton = (
     <TouchableOpacity style={styles.photoButton} onPress={pickImage}>
-      <Ionicons name="add-circle-outline" size={32} color={colors.orange} />
+      <Ionicons name="add-circle-outline" size={32} color={colors.blue} />
     </TouchableOpacity>
   );
 
@@ -67,34 +69,33 @@ const RegistrationScreen = () => {
         behavior={Platform.OS == "ios" ? "padding" : "height"}
       >
         <View style={styles.formContainer}>
-          <View style={styles.photoContainer}>
-            {photo ? (
-              <Image source={{ uri: photo }} style={styles.photo} />
-            ) : (
-              photoButton
-            )}
-          </View>
-
+          <View style={styles.photoContainer}></View>
           <Text style={styles.title}>Реєстрація</Text>
 
           <View style={[styles.innerContainer, styles.inputContainer]}>
             <Input
-              value={login}
+              value={user.login}
               placeholder="Логін"
-              onTextChange={handleLoginChange}
+              onTextChange={(value) => handleInputChange("login", value)}
             />
             <Input
-              value={email}
+              value={user.email}
               placeholder="Адреса електронної пошти"
-              onTextChange={handleEmailChange}
+              onTextChange={(value) => handleInputChange("email", value)}
             />
             <Input
-              value={password}
+              value={user.password}
               placeholder="Пароль"
-              rightButton={showButton}
+              rightButton={
+                <TouchableOpacity onPress={togglePasswordVisibility}>
+                  <Text style={[styles.baseText, styles.passwordButtonText]}>
+                    {user.isPasswordVisible ? "Показати" : "Сховати"}
+                  </Text>
+                </TouchableOpacity>
+              }
               outerStyles={styles.passwordButton}
-              onTextChange={handlePasswordChange}
-              secureTextEntry={isPasswordVisible}
+              onTextChange={(value) => handleInputChange("password", value)}
+              secureTextEntry={user.isPasswordVisible}
             />
           </View>
 
