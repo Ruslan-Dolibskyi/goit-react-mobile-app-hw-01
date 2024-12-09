@@ -22,8 +22,8 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <StackNavigator />
-      {/* <BottomTabNavigator /> */}
+      {/* <StackNavigator /> */}
+      <BottomTabNavigator />
     </NavigationContainer>
   );
 }

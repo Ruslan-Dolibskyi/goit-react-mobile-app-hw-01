@@ -10,19 +10,30 @@ const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator = () => {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      screenOptions={({ navigation }) => ({
+        tabBarLabel: "",
+        tabBarStyle: {
+          display: "flex",
+        },
+        tabBarItemStyle: {
+          paddingTop: 12,
+        },
+      })}
+    >
       <Tab.Screen
         name="Публікації"
         component={PostsScreen}
         options={({ navigation }) => ({
           title: "Posts Screen",
-          tabBarIcon: ({ focused }) => (
-            <Ionicons
-              name="grid"
-              size={32}
-              color={focused ? colors.orange : "black"}
-            />
-          ),
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <View style={styles.addButton}>
+                <Ionicons size={24} name="grid" color={colors.white} />
+              </View>
+            ) : (
+              <Ionicons name="grid" size={24} color="black" />
+            ),
         })}
       />
       <Tab.Screen
@@ -30,13 +41,14 @@ const BottomTabNavigator = () => {
         component={CreatePostsScreen}
         options={({ navigation }) => ({
           title: "Create Post",
-          tabBarIcon: ({ focused }) => (
-            <Ionicons
-              name="add"
-              size={32}
-              color={focused ? colors.orange : "black"}
-            />
-          ),
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <View style={styles.addButton}>
+                <Ionicons name="add" size={24} color={colors.white} />
+              </View>
+            ) : (
+              <Ionicons name="add" size={24} color="black" />
+            ),
         })}
       />
       <Tab.Screen
@@ -44,13 +56,14 @@ const BottomTabNavigator = () => {
         component={ProfileScreen}
         options={({ navigation }) => ({
           title: "Profile",
-          tabBarIcon: ({ focused }) => (
-            <Ionicons
-              name="person"
-              size={32}
-              color={focused ? colors.orange : "black"}
-            />
-          ),
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <View style={styles.addButton}>
+                <Ionicons name="person" size={24} color={colors.white} />
+              </View>
+            ) : (
+              <Ionicons name="person" size={24} color="black" />
+            ),
         })}
       />
     </Tab.Navigator>
