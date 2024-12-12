@@ -5,6 +5,8 @@ import { colors } from "../../styles/global";
 import PostsScreen from "../screens/PostsScreen";
 import CreatePostsScreen from "../screens/CreatePostsScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import LogoutButton from "../components/LogoutButton";
+import BackButton from "../components/BackButton";
 
 const Tab = createBottomTabNavigator();
 
@@ -41,6 +43,7 @@ const BottomTabNavigator = () => {
         component={CreatePostsScreen}
         options={({ navigation }) => ({
           title: "Create Post",
+          headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
           tabBarIcon: ({ focused }) =>
             focused ? (
               <View style={styles.addButton}>
@@ -56,6 +59,9 @@ const BottomTabNavigator = () => {
         component={ProfileScreen}
         options={({ navigation }) => ({
           title: "Profile",
+          headerRight: () => (
+            <LogoutButton onPress={() => console.log("log out")} />
+          ),
           tabBarIcon: ({ focused }) =>
             focused ? (
               <View style={styles.addButton}>

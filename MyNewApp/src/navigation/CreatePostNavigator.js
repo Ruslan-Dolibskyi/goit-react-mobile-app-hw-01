@@ -1,7 +1,7 @@
 import { createStackNavigator } from "@react-navigation/stack";
 
 import BackButton from "../components/BackButton";
-import CreatePostScreen from "../screens/CreatePostScreen";
+import CreatePostScreen from "../screens/CreatePostsScreen";
 import CameraScreen from "../screens/CameraScreen";
 
 const Stack = createStackNavigator();

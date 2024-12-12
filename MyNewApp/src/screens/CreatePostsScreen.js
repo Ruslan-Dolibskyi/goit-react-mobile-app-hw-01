@@ -2,11 +2,16 @@ import { FC, useEffect, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import "react-native-get-random-values";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import * as ImagePicker from "expo-image-picker";
 
 import { colors } from "../../styles/global";
+
 import Button from "../components/Button";
 import Input from "../components/Input";
+
+// const PLACES_KEY = "AIzaSyAhxqfyeRiiSj3Os9KyN3TcVFCxk6hQqh0";
+const PLACES_KEY = "AIzaSyC6JDHXJnADnvk7qvdlUF6B7ZlBW10xhGo";
 
 const CreatePostScreen = ({ navigation, route }) => {
   const params = route?.params;
@@ -34,6 +39,7 @@ const CreatePostScreen = ({ navigation, route }) => {
 
     if (!result.canceled) {
       const uri = result.assets[0].uri;
+
       setSelectedImage(uri);
     }
   };
@@ -46,11 +52,13 @@ const CreatePostScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     if (!params?.photo) return;
+
     setSelectedImage(params.photo);
   }, [params]);
 
   const onPublish = async () => {
     if (!user) return;
+
     try {
     } catch (error) {
       console.log(error);
@@ -70,7 +78,7 @@ const CreatePostScreen = ({ navigation, route }) => {
             onPress={navigateToCameraScreen}
             hitSlop={20}
           >
-            <Ionicons name="camera" size={34} color="gray" />
+            <Ionicons name="camera" size={24} color={colors.text_gray} />
           </TouchableOpacity>
         </View>
 
@@ -87,11 +95,48 @@ const CreatePostScreen = ({ navigation, route }) => {
           onTextChange={setTitle}
         />
 
-        <Input
-          value={address}
+        <GooglePlacesAutocomplete
           placeholder="Місцевість..."
-          outerStyles={styles.input}
-          onTextChange={setAddress}
+          minLength={4}
+          enablePoweredByContainer={false}
+          fetchDetails
+          onPress={(data, details = null) => {
+            setAddress(data.description);
+          }}
+          query={{ key: PLACES_KEY }}
+          styles={{
+            container: {
+              flex: 1,
+            },
+            textInputContainer: {
+              flexDirection: "row",
+              alignItems: "center", // Ensure vertical alignment of icon and input
+              paddingHorizontal: 8,
+            },
+            textInput: {
+              paddingVertical: 5,
+              paddingHorizontal: 4,
+              fontSize: 15,
+              flex: 1,
+              borderBottomWidth: 1,
+              borderColor: colors.border_gray,
+            },
+            row: {
+              backgroundColor: "#FFFFFF",
+              padding: 13,
+              height: 44,
+              flexDirection: "row",
+            },
+            predefinedPlacesDescription: {
+              color: "#1faadb",
+            },
+            listView: {
+              maxHeight: 160,
+            },
+          }}
+          renderLeftButton={() => (
+            <Ionicons name="location" size={24} color={colors.text_gray} />
+          )}
         />
       </View>
 
