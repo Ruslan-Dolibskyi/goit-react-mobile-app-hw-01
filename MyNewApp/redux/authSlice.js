@@ -1,16 +1,49 @@
-// redux/authSlice.js
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  updateUserProfile,
+  getUserProfile,
+  monitorAuthState,
+} from "../firebase";
 
-const initialState = {
-  user: null,
-  isAuthenticated: false,
-  loading: false,
-  error: null,
-};
+export const updateProfileThunk = createAsyncThunk(
+  "auth/updateProfile",
+  async ({ displayName, photoURL }, { rejectWithValue }) => {
+    try {
+      await updateUserProfile(displayName, photoURL);
+      return getUserProfile();
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const checkAuthStatusThunk = createAsyncThunk(
+  "auth/checkAuthStatus",
+  async (_, { dispatch }) => {
+    monitorAuthState((user) => {
+      if (user) {
+        dispatch(
+          setUser({
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            email: user.email,
+          })
+        );
+      } else {
+        dispatch(clearUser());
+      }
+    });
+  }
+);
 
 const authSlice = createSlice({
   name: "auth",
-  initialState,
+  initialState: {
+    user: null,
+    isAuthenticated: false,
+    loading: false,
+    error: null,
+  },
   reducers: {
     setUser(state, action) {
       state.user = action.payload;
@@ -26,6 +59,15 @@ const authSlice = createSlice({
     setError(state, action) {
       state.error = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(updateProfileThunk.fulfilled, (state, action) => {
+        state.user = action.payload;
+      })
+      .addCase(updateProfileThunk.rejected, (state, action) => {
+        state.error = action.payload;
+      });
   },
 });
 

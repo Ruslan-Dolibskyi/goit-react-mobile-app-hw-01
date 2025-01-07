@@ -8,28 +8,26 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { CameraView } from "expo-camera";
-import * as MediaLibrary from "expo-media-library";
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons";
-import uuid from "react-native-uuid";
+import * as MediaLibrary from "expo-media-library";
+import * as Location from "expo-location";
 import { colors } from "../styles/global";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import Camera from "../components/Camera";
-import * as Location from "expo-location";
+import { addPost } from "../firebase";
 
 const InitialState = {
   title: "",
   locality: "",
 };
 
-const CreatePostsScreen = ({ navigation, route }) => {
+const CreatePostsScreen = ({ navigation }) => {
   const [location, setLocation] = useState(InitialState);
   const [photoUrl, setPhotoUrl] = useState("");
   const [geoLocation, setGeoLocation] = useState(null);
   const camera = useRef(null);
   const [facing, setFacing] = useState("back");
-  const [permission, requestPermission] = Location.useForegroundPermissions();
   const isEnabled = location.title && location.locality;
 
   useEffect(() => {
@@ -50,15 +48,6 @@ const CreatePostsScreen = ({ navigation, route }) => {
     })();
   }, []);
 
-  const localityIcon = (
-    <SimpleLineIcons
-      name="location-pin"
-      size={24}
-      color={colors.gray}
-      style={styles.iconLocality}
-    />
-  );
-
   const toggleCameraFacing = () => {
     setFacing((current) => (current === "back" ? "front" : "back"));
   };
@@ -73,28 +62,49 @@ const CreatePostsScreen = ({ navigation, route }) => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!isEnabled) {
       alert("Please fill in all fields.");
       return;
     }
+
     const post = {
-      id: uuid.v4(),
       pictureUrl: photoUrl,
       pictureName: location.title,
       comments: [],
       locality: location.locality,
       geoLocation,
+      createdAt: new Date().toISOString(),
     };
-    navigation.navigate("Posts", { post });
-    setLocation(InitialState);
-    setPhotoUrl("");
+
+    try {
+      await addPost(post);
+      console.log("Post added successfully!");
+      navigation.navigate("PostsStack", {
+        screen: "Posts",
+        params: { post },
+      });
+      setLocation(InitialState);
+      setPhotoUrl("");
+    } catch (error) {
+      console.error("Failed to add post:", error);
+      alert("Failed to add post. Please try again.");
+    }
   };
 
   const onClearData = () => {
     setLocation(InitialState);
     setPhotoUrl("");
   };
+
+  const localityIcon = (
+    <SimpleLineIcons
+      name="location-pin"
+      size={24}
+      color={colors.gray}
+      style={styles.iconLocality}
+    />
+  );
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -114,14 +124,12 @@ const CreatePostsScreen = ({ navigation, route }) => {
           <View style={{ width: "100%", gap: 16 }}>
             <Input
               value={location.title}
-              autofocus={true}
               placeholder="Назва..."
               onTextChange={(title) => setLocation({ ...location, title })}
               outerStyles={styles.inputOuterStyles}
             />
             <Input
               value={location.locality}
-              autofocus={true}
               placeholder="Місцевість..."
               leftButton={localityIcon}
               onTextChange={(locality) =>
@@ -130,7 +138,7 @@ const CreatePostsScreen = ({ navigation, route }) => {
               outerStyles={[styles.inputOuterStyles, { paddingLeft: 28 }]}
             />
           </View>
-          <View style={{ width: "100%" }}>
+          <View style={{ width: "100%", alignItems: "center", gap: 16 }}>
             <Button onPress={handleSubmit} disabled={!isEnabled}>
               <Text
                 style={[
@@ -141,9 +149,11 @@ const CreatePostsScreen = ({ navigation, route }) => {
                 Опубліковати
               </Text>
             </Button>
-            <Button buttonStyle={styles.deleteBtn} onPress={onClearData}>
-              <Ionicons name="trash" color={colors.gray} size={24} />
-            </Button>
+            {photoUrl || location.title || location.locality ? (
+              <Button buttonStyle={styles.deleteBtn} onPress={onClearData}>
+                <Ionicons name="trash" color={colors.gray} size={24} />
+              </Button>
+            ) : null}
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -191,8 +201,7 @@ const styles = StyleSheet.create({
     borderRadius: 0,
   },
   deleteBtn: {
-    marginTop: 120,
-    left: "40%",
+    marginTop: 100,
     paddingVertical: 0,
     paddingHorizontal: 0,
     backgroundColor: colors.light_gray,

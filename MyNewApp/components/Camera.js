@@ -27,7 +27,7 @@ const Camera = ({
         <MaterialCommunityIcons
           name="camera-outline"
           size={24}
-          color={colors.white}
+          color={colors.gray}
           style={styles.iconPhoto}
         />
       </TouchableOpacity>
@@ -41,7 +41,7 @@ const Camera = ({
         <MaterialCommunityIcons
           name="camera-flip-outline"
           size={24}
-          color={colors.white}
+          color={colors.gray}
           style={styles.iconPhoto}
         />
       </TouchableOpacity>

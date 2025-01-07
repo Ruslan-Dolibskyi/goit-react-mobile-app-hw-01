@@ -11,6 +11,7 @@ import { colors } from "../styles/global";
 import Comment from "../components/Comment";
 import Input from "../components/Input";
 import SendButton from "../components/SendButton";
+import { addCommentToPost } from "../firebase";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 const pictureWidth = SCREEN_WIDTH - 32;
@@ -20,11 +21,19 @@ const CommentsScreen = ({ navigation, route }) => {
   const [userComment, setUserComment] = useState("");
   const { item } = route.params;
 
-  const handleSendComment = () => {
-    if (!userComment) {
-      return;
+  const handleSendComment = async () => {
+    if (!userComment) return;
+
+    try {
+      const comment = {
+        text: userComment,
+        createdAt: new Date().toISOString(),
+      };
+      await addCommentToPost(item.id, comment); // Додаємо коментар у Firebase
+      setUserComment("");
+    } catch (error) {
+      console.error("Error adding comment:", error);
     }
-    navigation.navigate("Posts", { userComment });
   };
 
   const sendComment = (
@@ -50,9 +59,8 @@ const CommentsScreen = ({ navigation, route }) => {
       </View>
       <FlatList
         data={item.comments}
+        keyExtractor={(comment, index) => index.toString()}
         renderItem={({ item }) => <Comment comment={item} />}
-        keyExtractor={(item) => item.id}
-        ItemSeparatorComponent={() => <View style={{ height: 24 }} />}
       />
       <Input
         value={userComment}

@@ -70,14 +70,25 @@ export const getUserProfile = () => {
 
 // Функції для постів
 export const fetchPosts = async () => {
-  const postsCollection = collection(db, "posts");
-  const postsSnapshot = await getDocs(postsCollection);
-  return postsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  try {
+    const postsCollection = collection(db, "posts");
+    const postsSnapshot = await getDocs(postsCollection);
+    return postsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    throw error;
+  }
 };
 
 export const addPost = async (post) => {
-  const postsCollection = collection(db, "posts");
-  await addDoc(postsCollection, post);
+  try {
+    const postsCollection = collection(db, "posts");
+    await addDoc(postsCollection, post);
+    console.log("Post added successfully!");
+  } catch (error) {
+    console.error("Error adding post:", error);
+    throw error;
+  }
 };
 
 export const monitorPosts = (callback) => {
@@ -91,6 +102,12 @@ export const monitorPosts = (callback) => {
 
 // Функції для коментарів
 export const addCommentToPost = async (postId, comment) => {
-  const commentsCollection = collection(db, `posts/${postId}/comments`);
-  await addDoc(commentsCollection, comment);
+  try {
+    const commentsCollection = collection(db, `posts/${postId}/comments`);
+    await addDoc(commentsCollection, comment);
+    console.log("Comment added successfully!");
+  } catch (error) {
+    console.error("Error adding comment:", error);
+    throw error;
+  }
 };
