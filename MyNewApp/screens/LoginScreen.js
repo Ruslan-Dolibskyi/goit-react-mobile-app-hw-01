@@ -28,7 +28,7 @@ const LoginScreen = ({ navigation, route }) => {
   const [user, setUser] = useState(InitialState);
   const [isPasswordVisible, setIsPasswordVisible] = useState(true);
 
-  const { onLogin } = route.params || {}; // Отримуємо onLogin з параметрів
+  const { onLogin } = route.params || {};
 
   const showPassword = () => {
     setIsPasswordVisible((prev) => !prev);
@@ -51,7 +51,7 @@ const LoginScreen = ({ navigation, route }) => {
       alert("Вхід успішний!");
       setUser(InitialState);
 
-      if (onLogin) onLogin(); // Викликаємо зміну стану в Navigation
+      if (onLogin) onLogin();
     } catch (error) {
       alert("Помилка входу: " + error.message);
     }

@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "../styles/global";
 import RegistrationScreen from "../screens/RegistrationScreen";
@@ -24,7 +23,6 @@ const PostsStack = createStackNavigator();
 const Navigation = () => {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
-  // Слухач змін авторизації Firebase
   useEffect(() => {
     const unsubscribe = monitorAuthState((user) => {
       setIsUserLoggedIn(!!user);

@@ -15,7 +15,6 @@ import { colors } from "../styles/global";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import Camera from "../components/Camera";
-import { addPost } from "../firebase";
 
 const InitialState = {
   title: "",
@@ -62,12 +61,11 @@ const CreatePostsScreen = ({ navigation }) => {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!isEnabled) {
       alert("Please fill in all fields.");
       return;
     }
-
     const post = {
       pictureUrl: photoUrl,
       pictureName: location.title,
@@ -76,20 +74,9 @@ const CreatePostsScreen = ({ navigation }) => {
       geoLocation,
       createdAt: new Date().toISOString(),
     };
-
-    try {
-      await addPost(post);
-      console.log("Post added successfully!");
-      navigation.navigate("PostsStack", {
-        screen: "Posts",
-        params: { post },
-      });
-      setLocation(InitialState);
-      setPhotoUrl("");
-    } catch (error) {
-      console.error("Failed to add post:", error);
-      alert("Failed to add post. Please try again.");
-    }
+    navigation.navigate("Posts", { post });
+    setLocation(InitialState);
+    setPhotoUrl("");
   };
 
   const onClearData = () => {
@@ -201,7 +188,7 @@ const styles = StyleSheet.create({
     borderRadius: 0,
   },
   deleteBtn: {
-    marginTop: 100,
+    marginTop: 120,
     paddingVertical: 0,
     paddingHorizontal: 0,
     backgroundColor: colors.light_gray,

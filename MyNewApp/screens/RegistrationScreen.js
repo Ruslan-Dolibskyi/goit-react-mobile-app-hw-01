@@ -12,7 +12,7 @@ import {
   TouchableWithoutFeedback,
   Platform,
 } from "react-native";
-import { registerUser } from "../firebase"; // Імпорт функції реєстрації
+import { registerUser } from "../firebase";
 import { colors } from "../styles/global";
 import Button from "../components/Button";
 import Link from "../components/Link";

@@ -29,7 +29,7 @@ const CommentsScreen = ({ navigation, route }) => {
         text: userComment,
         createdAt: new Date().toISOString(),
       };
-      await addCommentToPost(item.id, comment); // Додаємо коментар у Firebase
+      await addCommentToPost(item.id, comment);
       setUserComment("");
     } catch (error) {
       console.error("Error adding comment:", error);
