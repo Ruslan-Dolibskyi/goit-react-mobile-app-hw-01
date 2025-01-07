@@ -1,17 +1,14 @@
+// App.js
 import "react-native-gesture-handler";
-import React, { useEffect } from "react";
+import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 import { StatusBar } from "expo-status-bar";
 import { ActivityIndicator, View, StyleSheet } from "react-native";
 import { useFonts } from "expo-font";
 import { colors } from "./styles/global";
 import Navigation from "./navigation/navigation";
-import { Provider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
-import store from "./redux/store";
-import { authStateChanged } from "./firebase/auth";
-import { useDispatch } from "react-redux";
-import { setUser, clearUser } from "./redux/authSlice";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -20,18 +17,6 @@ export default function App() {
     "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
     "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
   });
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    authStateChanged((user) => {
-      if (user) {
-        dispatch(setUser({ uid: user.uid, email: user.email }));
-      } else {
-        dispatch(clearUser());
-      }
-    });
-  }, [dispatch]);
 
   if (!fontsLoaded) {
     return (
@@ -42,20 +27,11 @@ export default function App() {
   }
 
   return (
-    <Provider store={store.store}>
-      <PersistGate
-        loading={
-          <View style={styles.loaderContainer}>
-            <ActivityIndicator size="large" color={colors.orange} />
-          </View>
-        }
-        persistor={store.persistor}
-      >
-        <NavigationContainer>
-          <Navigation />
-          <StatusBar style="auto" />
-        </NavigationContainer>
-      </PersistGate>
+    <Provider store={store}>
+      <NavigationContainer>
+        <Navigation />
+        <StatusBar style="auto" />
+      </NavigationContainer>
     </Provider>
   );
 }

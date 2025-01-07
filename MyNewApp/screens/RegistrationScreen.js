@@ -12,14 +12,14 @@ import {
   TouchableWithoutFeedback,
   Platform,
 } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+import { registerUser } from "../firebase"; // Імпорт функції реєстрації
 import { colors } from "../styles/global";
 import Button from "../components/Button";
 import Link from "../components/Link";
 import Input from "../components/Input";
+import { AntDesign } from "@expo/vector-icons";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
-
 const avatarUrl = require("../assets/avatar.png");
 
 const InitialState = {
@@ -47,12 +47,19 @@ const RegistrationScreen = ({ navigation }) => {
     </TouchableOpacity>
   );
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!user.nickname || !user.email || !user.password) {
-      alert("Please fill in all fields.");
+      alert("Будь ласка, заповніть усі поля.");
       return;
     }
-    setUser(InitialState);
+    try {
+      await registerUser(user.email, user.password);
+      alert("Реєстрація успішна!");
+      setUser(InitialState);
+      navigation.navigate("Login");
+    } catch (error) {
+      alert("Помилка реєстрації: " + error.message);
+    }
   };
 
   const navigateToLogin = () => {
@@ -85,7 +92,7 @@ const RegistrationScreen = ({ navigation }) => {
                   size={24}
                   color={colors.border_gray}
                   onPress={() => {
-                    alert("Avatar removal feature not implemented");
+                    alert("Функція видалення аватара не реалізована");
                   }}
                 />
               </View>
@@ -126,7 +133,10 @@ const RegistrationScreen = ({ navigation }) => {
               </Button>
               <Link onPress={navigateToLogin}>
                 <Text style={[styles.text, { color: colors.navy_blue }]}>
-                  Вже є акаунт? Увійти
+                  Вже є акаунт?{" "}
+                  <Text style={{ textDecorationLine: "underline" }}>
+                    Увійти
+                  </Text>
                 </Text>
               </Link>
             </View>

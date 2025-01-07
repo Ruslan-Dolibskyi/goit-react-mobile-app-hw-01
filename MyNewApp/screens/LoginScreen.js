@@ -11,6 +11,7 @@ import {
   TouchableWithoutFeedback,
   Platform,
 } from "react-native";
+import { loginUser } from "../firebase";
 import { colors } from "../styles/global";
 import Button from "../components/Button";
 import Link from "../components/Link";
@@ -24,9 +25,10 @@ const InitialState = {
 };
 
 const LoginScreen = ({ navigation, route }) => {
-  const { onLogin } = route.params || {};
   const [user, setUser] = useState(InitialState);
   const [isPasswordVisible, setIsPasswordVisible] = useState(true);
+
+  const { onLogin } = route.params || {}; // Отримуємо onLogin з параметрів
 
   const showPassword = () => {
     setIsPasswordVisible((prev) => !prev);
@@ -43,11 +45,16 @@ const LoginScreen = ({ navigation, route }) => {
     </TouchableOpacity>
   );
 
-  const handleSubmit = () => {
-    if (onLogin) {
-      onLogin();
+  const handleSubmit = async () => {
+    try {
+      await loginUser(user.email, user.password);
+      alert("Вхід успішний!");
+      setUser(InitialState);
+
+      if (onLogin) onLogin(); // Викликаємо зміну стану в Navigation
+    } catch (error) {
+      alert("Помилка входу: " + error.message);
     }
-    setUser(InitialState);
   };
 
   const navigateToRegistration = () => {

@@ -1,25 +1,33 @@
+// redux/authSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  userInfo: null,
+  user: null,
+  isAuthenticated: false,
+  loading: false,
+  error: null,
 };
 
-// Створення slice для користувача
-const userSlice = createSlice({
-  name: "user",
+const authSlice = createSlice({
+  name: "auth",
   initialState,
   reducers: {
-    setUserInfo(state, action) {
-      state.userInfo = action.payload;
+    setUser(state, action) {
+      state.user = action.payload;
+      state.isAuthenticated = true;
     },
-    clearUserInfo(state) {
-      state.userInfo = null;
+    clearUser(state) {
+      state.user = null;
+      state.isAuthenticated = false;
+    },
+    setLoading(state, action) {
+      state.loading = action.payload;
+    },
+    setError(state, action) {
+      state.error = action.payload;
     },
   },
 });
 
-// Експорт дій для використання у компонентах
-export const { setUserInfo, clearUserInfo } = userSlice.actions;
-
-// Експорт ред'юсера для підключення до Store
-export default userSlice.reducer;
+export const { setUser, clearUser, setLoading, setError } = authSlice.actions;
+export default authSlice.reducer;

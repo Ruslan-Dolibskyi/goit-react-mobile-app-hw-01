@@ -43,7 +43,7 @@
 9. У компоненті окремого посту під час кліку на іконку геолокації перекидає на екран MapScreen, де можна побачити мапу з маркером, де була зроблена фотографія
 
 ![screenshot](/screenshot/hw_4.png)
-![screenshot](/screenshot/hw_5.png)
+![screenshot](/screenshot/hw_4-1.png)
 
 ## Завдання 5
 
@@ -54,4 +54,5 @@
 5. Додавати логіку перевірки авторизації та редіректу на відповідні екрани.
 6. Реалізувати функціональність логіуту, завантаження постів та додавання коментарів з використанням Firebase та Redux.
 
-![screenshot](/screenshot/hw_6.png)
+![screenshot](/screenshot/hw_5.png)
+![screenshot](/screenshot/hw_5-1.png)
